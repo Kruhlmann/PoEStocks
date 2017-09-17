@@ -1,8 +1,8 @@
 import json
+import numpy as np
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-import numpy as NP
-from matplotlib import pyplot as PLT
+from matplotlib import pyplot as plt
 
 no_trades_found_text = "Oopsie! Nothing was found. If you want to buy currency why don't you"
 
@@ -73,19 +73,16 @@ def get_average_exchange_rate(league, want, have):
     return chaos_accum / exchange_nums if exchange_nums > 0 else -1
 
 
-# just create some random data
-fnx = lambda : NP.random.randint(3, 10, 10)
-y = NP.row_stack((fnx(), fnx(), fnx()))   
-# this call to 'cumsum' (cumulative sum), passing in your y data, 
-# is necessary to avoid having to manually order the datasets
-x = NP.arange(10) 
-y_stack = NP.cumsum(y, axis=0)   # a 3x10 array
+def update_graphs():
+    data = []
+    count = []
+    c = 1
+    for line in open("chromatic.md", "r"):
+        data.append(float(line))
+        count.append(c)
+        c = c + 1
 
-fig = PLT.figure()
-ax1 = fig.add_subplot(111)
-
-ax1.fill_between(x, 0, y_stack[0,:], facecolor="#CC6666", alpha=.7)
-ax1.fill_between(x, y_stack[0,:], y_stack[1,:], facecolor="#1DACD6", alpha=.7)
-ax1.fill_between(x, y_stack[1,:], y_stack[2,:], facecolor="#6E5160")
-
-PLT.savefig('ex.png', trasparent=True)
+    x = np.array(count)
+    y = np.array(data)
+    plt.plot(x, y)
+    plt.show()
