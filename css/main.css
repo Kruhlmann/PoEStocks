@@ -106,15 +106,39 @@ body {
 .layout-table {
 	border: none;
 	padding: 10px;
-	width: 100%;
 }
 
 .graph-container {
-	border: 1px solid #333;
-	width: 500px;
+	border: 2px solid #ccc;
+	width: 700px;
+	background-color: #fff; 
 }
 
 .graph {
-	width: 100%;
-	margin: 5px 15px 50px 5px;
+	margin: 0px;
+}
+
+.graph-title {
+	margin-top: 0px;
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+.graph-category {
+	text-align: left;
+	font-size: 28px;
+	display: inline-block;
+	line-height: 32px;
+	margin-top: 40px;
+}
+
+.graph-category-title {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.icon {
+	float: left;
+	width: 32px;
+	height: 32px;
 }
