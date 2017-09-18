@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import time
 import api
+import sqlite3
 
 league = "Harbinger"
 currencies = [
@@ -42,30 +43,40 @@ currencies = [
     {"price": [], "name": "mortal-ignorance", "id": 35},
     {"price": [], "name": "key-eber", "id": 36},
     {"price": [], "name": "key-yriel", "id": 37},
-    {"price": [], "name": "key-inya", "id": 37},
-    {"price": [], "name": "key-volkuur", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
-    {"price": [], "name": "noon-sacrifice", "id": 37},
+    {"price": [], "name": "key-inya", "id": 38},
+    {"price": [], "name": "key-volkuur", "id": 39},
+    {"price": [], "name": "offering", "id": 40},
+    {"price": [], "name": "hydra-fragment", "id": 41},
+    {"price": [], "name": "phoenix-fragment", "id": 42},
+    {"price": [], "name": "minotaur-fragment", "id": 43},
+    {"price": [], "name": "chimera-fragment", "id": 44},
 ]
 
 def routine():
     for currency in currencies:
         currency["price"].append(api.get_average_exchange_rate(league=league, want=4, have=currency["id"]))
 
-for i in range(0, 5):
-    try:
-        routine()
-    except KeyboardInterrupt:
-        print("Exiting...")
-        exit(0)
+def init_db(cursor):
+    cursor.execute("""CREATE TABLE IF NOT EXISTS items (id INTEGER, name TEXT)""")
+    for currency in currencies:
+        cursor.execute("""INSERT INTO items VALUES({0}, "{1}")""".format(currency["id"], currency["name"]))
 
-for currency in currencies:
-    y = np.array(currency["price"])
-    plt.plot(y)
-    plt.savefig("img/graphs/{0}.png".format(currency["name"]), transparent=True)
-    plt.clf()
+if __name__ == "__main__":
+    conn = sqlite3.connect("db/currencies.db")
+    cursor = conn.cursor()
+    init_db(cursor)
+    conn.commit()
+    conn.close()
+
+    for i in range(0, 5):
+        try:
+            routine()
+        except KeyboardInterrupt:
+            print("Exiting...")
+            exit(0)
+
+    for currency in currencies:
+        y = np.array(currency["price"])
+        plt.plot(y)
+        plt.savefig("img/graphs/{0}.png".format(currency["name"]), transparent=True)
+        plt.clf()
