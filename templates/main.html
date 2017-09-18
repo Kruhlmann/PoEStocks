@@ -7,12 +7,15 @@
 		<div class="main-header">
 			<ul class="site-links">
 				<li class="site-link site-link-border-right"><a href="#" class="neutral-anchor">PoE Stocks</a></li>
-				<li class="site-link site-link-border-right"><a href="#" class="neutral-anchor">Home</a></li>
+				<li class="site-link site-link-border-right"><a href="#" class="neutral-anchor">Leagues</a></li>
 				<li class="site-link site-link-border-right"><a href="#" class="neutral-anchor">Dashboard</a></li>
 				<li class="site-link"><a href="#" class="neutral-anchor">About</a></li>
 			</ul>
 			<form class="search-form">
-				<input class="search-input" type="text" name="query" placeholder="Search for currency ...">
+				<input class="search-input" id="search-input" type="text" name="query" placeholder="Search for currency ..." onchange="populate_search_results(this.value);" onkeyup="this.onchange(this.value);" onpaste="this.onchange(this.value);" oninput="this.onchange(this.value);">
+				<ul class="results" id="results">
+					<!-- javascirpt fills this -->
+				</ul>
 			</form>
 		</div>
 		<div class="sub-header">
@@ -23,7 +26,11 @@
 			</ul>
 		</div>
 		<div class="content">
-			{0}
+			{content}
 		</div>
+		<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+		<script>
+			{js}
+		</script>
 	</body>
 </html>
