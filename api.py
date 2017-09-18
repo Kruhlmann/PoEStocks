@@ -39,7 +39,7 @@ def get_current_trades(league, want, have):
     response = urlopen(request_url).read()
     if no_trades_found_text in str(response):
         return -1
-    soup = BeautifulSoup(response)
+    soup = BeautifulSoup(response, "html.parser")
     sellers = soup.findAll("div", { "class" : "displayoffer" })
     for seller in sellers:
         print(str(seller) + "\n" * 8)
@@ -53,7 +53,7 @@ def get_average_exchange_rate(league, want, have):
     	return -1 
     if no_trades_found_text in str(response):
         return -1
-    soup = BeautifulSoup(response)
+    soup = BeautifulSoup(response, "html.parser")
     sellers = soup.findAll("div", { "class" : "displayoffer" })
     
     exchange_nums = 0
