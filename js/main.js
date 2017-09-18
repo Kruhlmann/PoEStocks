@@ -2,6 +2,7 @@
 
 function search_results_to_html(results){
     html = "";
+    if(results.length == 0) return '<a href="#"><li class="result result-final"><span>No results found</span></li></a>';
     for(var i = 0; i < results.length; i++){
         html += '<a href="#"><li class="result result-final"><img src="../img/currency/' + currencies[results[i]]["name"] + '.png"></img><span>' + currencies[results[i]]["display_name"] + '</span></li></a>'
     }
