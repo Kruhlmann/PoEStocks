@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 import time
 import api
 import connection
+import export
 import datetime
 
 league = "Harbinger"
@@ -61,6 +62,7 @@ def routine(cursor):
     for currency in currencies:
         currency["price"].append(api.get_average_exchange_rate(league=league, want=4, have=currency["id"]))
     insert_currencies(cursor, currencies)
+    export.run()
 
 def init_db(cursor):
     print("Initializing")
@@ -73,22 +75,17 @@ def init_db(cursor):
 if __name__ == "__main__":
     conn = connection.create_connection()
     cursor = conn.cursor()
-    init_db(cursor)
+    #init_db(cursor)
 
     while True:
         try:
-            print("Running routine...")
+            time_before = time.time()
             routine(cursor)
+            delta_time = time.time() - time_before
+            print("Routine took {0} seconds".format(delta_time))
             conn.commit()
-            time.sleep(15 * 60) #15 minutes
+            time.sleep(15 * 60 - delta_time) #15 minutes
         except KeyboardInterrupt:
             print("Exiting...")
             exit(0)
             conn.close()
-
-    for currency in currencies:
-        y = np.array(currency["price"])
-        plt.plot(y)
-        plt.savefig("img/graphs/{0}.png".format(currency["name"]), transparent=True)
-        plt.clf()
-    conn.close()

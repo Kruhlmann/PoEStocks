@@ -46,11 +46,17 @@ class About(object):
     def index(self):
         return get_template("main").format(sub_header="", content="About page", js=get_main_js())
     
+class Currencies(object):
+    @cherrypy.expose
+    def index(self):
+        return get_template("main").format(sub_header="", content="Currencies", js=get_main_js())
+    
 
 if __name__ == "__main__":
     config_file = os.path.join(os.path.dirname(__file__), "server.conf")
     cherrypy.tree.mount(DashBoard(), '/', config=config_file)
     cherrypy.tree.mount(Rates(), '/rates', config=config_file)
     cherrypy.tree.mount(About(), '/about', config=config_file)
+    cherrypy.tree.mount(Currencies(), '/currencies', config=config_file)
     cherrypy.engine.start()
     cherrypy.engine.block()

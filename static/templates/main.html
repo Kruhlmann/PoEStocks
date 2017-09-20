@@ -9,10 +9,11 @@
 				<li class="site-link site-link-border-right"><a href="/" class="neutral-anchor">PoE Stocks</a></li>
 				<li class="site-link site-link-border-right"><a href="/" class="neutral-anchor">Dashboard</a></li>
 				<li class="site-link site-link-border-right"><a href="/rates" class="neutral-anchor">Permanent Rates</a></li>
+				<li class="site-link site-link-border-right"><a href="/currencies" class="neutral-anchor">Currencies</a></li>
 				<li class="site-link"><a href="/about" class="neutral-anchor">About</a></li>
 			</ul>
 			<form class="search-form">
-				<input class="search-input" id="search-input" type="text" name="query" placeholder="Search for currency ..." onchange="populate_search_results(this.value);" onkeyup="this.onchange(this.value);" onpaste="this.onchange(this.value);" oninput="this.onchange(this.value);">
+				<input autocomplete="off" class="search-input" id="search-input" type="text" name="query" placeholder="Search for currency ..." onchange="populate_search_results(this.value);" onkeyup="this.onchange(this.value);" onpaste="this.onchange(this.value);" oninput="this.onchange(this.value);">
 				<ul class="results" id="results">
 					<!-- javascirpt fills this -->
 				</ul>

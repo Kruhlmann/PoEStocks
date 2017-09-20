@@ -13,7 +13,7 @@ function populate_search_results(query){
     currencies.sort(compare_currency);
     results = [];
     for(var i = 0; i < currencies.length; i++){
-        if(currencies[i]["name"].indexOf(query) !== -1 || query == ""){
+        if(currencies[i]["display_name"].indexOf(query) !== -1 || query == ""){
             results.push(i);
             if(results.length >= 3){
                 document.getElementById("results").innerHTML = search_results_to_html(results)
