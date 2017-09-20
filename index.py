@@ -6,13 +6,13 @@ import connection
 
 sub_header = open("static/templates/sub_header.html").read()
 
-def get_dashboard_entries():
+def get_dashboard_entries(interval):
     entries = ""
     cur = connection.select_all_currencies()
     for c in cur:
         with open("static/templates/dash_entry.html") as f:
             if c[1] != "chaos":
-                entries = entries + f.read().format(filename=c[1], display_name=c[2]) 
+                entries = entries + f.read().format(filename=c[1], display_name=c[2], interval=interval) 
     return entries
 
 def get_template(template):
@@ -33,8 +33,8 @@ def get_main_js():
 
 class DashBoard(object):
     @cherrypy.expose
-    def index(self):
-        return get_template("main").format(sub_header=sub_header, content=open("static/templates/dashboard.html").read().format(content=get_dashboard_entries()), js=get_main_js())
+    def index(self, interval="hour"):
+        return get_template("main").format(sub_header=sub_header, content=open("static/templates/dashboard.html").read().format(content=get_dashboard_entries(interval)), js=get_main_js())
 
 class Rates(object):
     @cherrypy.expose

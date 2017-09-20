@@ -4,6 +4,14 @@ import time
 import connection
 import datetime
 
+def reverse_array(array):
+    if len(array) < 2:
+        return array
+    res = []
+    for i in range(len(array), 0, -1):
+        res.append(array[i - 1])
+    return res
+
 def get_x_array(dates):
     res = []
     i = 0
@@ -19,9 +27,9 @@ def get_all_currencies(limit=0):
     items = cursor.fetchall()
     for cur in items:
         if limit > 0:
-            cursor.execute("SELECT * FROM history WHERE currency_id=" + str(cur[0]) + " LIMIT " + str(limit))
+            cursor.execute("SELECT * FROM history WHERE currency_id=" + str(cur[0]) + " ORDER BY at DESC LIMIT " + str(limit))
         else:
-            cursor.execute("SELECT * FROM history WHERE currency_id=" + str(cur[0]))
+            cursor.execute("SELECT * FROM history WHERE currency_id=" + str(cur[0]) + " ORDER BY at DESC")
         prices = cursor.fetchall()
         res.append({"id": cur[0], "name": cur[1], "display_name": cur[2], "prices": prices})
     return res
@@ -29,10 +37,15 @@ def get_all_currencies(limit=0):
 def export_minute_graphs():
     print("Exporting minute graphs...")
     currencies = get_all_currencies(limit=20)
-    for currency in currencies:
+    for i in range(len(currencies), 0, -1):
+        currency = currencies[i - 1]
         values = []
         dates = []
-        for price in currency["prices"]:
+        # Reversed since we're using DESC in the SQL query
+        for price in reverse_array(currency["prices"]):
+            # We only want data points from today
+            if datetime.datetime.today().date() != datetime.datetime.strptime(price[2], "%Y-%m-%d %H:%M:%S.%f").date():
+                continue
             values.append(price[1])
             dates.append(datetime.datetime.strptime(price[2], "%Y-%m-%d %H:%M:%S.%f").strftime("%H:%M"))
         plt.xticks(get_x_array(dates), dates, rotation=45)
@@ -48,7 +61,8 @@ def export_hour_graphs():
         values = []
         dates = []
         i = 0
-        for price in currency["prices"]:
+        # Reversed since we're using DESC in the SQL query
+        for price in reverse_array(currency["prices"]):
             if i % 4 == 0:
                 values.append(price[1])
                 dates.append(datetime.datetime.strptime(price[2], "%Y-%m-%d %H:%M:%S.%f").strftime("%H:%M"))
