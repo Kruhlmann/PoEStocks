@@ -42,20 +42,17 @@ def export_minute_graphs():
 
 def export_hour_graphs():
     print("Exporting hour graphs...")
-    unfiltered_currencies = get_all_currencies(limit=1)
-    currencies = []
-    for i in range(0, len(unfiltered_currencies)):
-        if i % 4 == 0:
-            currencies.append(unfiltered_currencies[i])
-    print(len(currencies))
-    print(len(unfiltered_currencies))
+    currencies = get_all_currencies(limit=80)
 
     for currency in currencies:
         values = []
         dates = []
+        i = 0
         for price in currency["prices"]:
-            values.append(price[1])
-            dates.append(datetime.datetime.strptime(price[2], "%Y-%m-%d %H:%M:%S.%f").strftime("%H:%M"))
+            if i % 4 == 0:
+                values.append(price[1])
+                dates.append(datetime.datetime.strptime(price[2], "%Y-%m-%d %H:%M:%S.%f").strftime("%H:%M"))
+            i = i + 1
         plt.xticks(get_x_array(dates), dates, rotation=45)
         plt.plot(get_x_array(dates), values)
         plt.savefig("static/img/graphs/hour/{0}.png".format(currency["name"]), transparent=True)
