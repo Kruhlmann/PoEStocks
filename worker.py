@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 import time
 import api
 import connection
+import datetime
 
 league = "Harbinger"
 currencies = [
@@ -52,32 +53,42 @@ currencies = [
     {"display_name": "Fragment of the Chimera", "price": [], "name": "chimera-fragment", "id": 44},
 ]
 
-def routine():
+def insert_currencies(cursor, currencies):
+    for currency in currencies:
+        cursor.execute("INSERT INTO history VALUES ({0}, {1}, '{2}')".format(currency["id"], currency["price"][0], datetime.datetime.now()))
+
+def routine(cursor):
     for currency in currencies:
         currency["price"].append(api.get_average_exchange_rate(league=league, want=4, have=currency["id"]))
+    insert_currencies(cursor, currencies)
 
 def init_db(cursor):
+    print("Initializing")
     cursor.execute("""CREATE TABLE IF NOT EXISTS items (id INTEGER, name TEXT, display_name TEXT)""")
-    cursor.execute("""CREATE TABLE IF NOT EXISTS history (id INTEGER, currency_id INTEGER, price DECIMAL, at DATETIME)""")
+    cursor.execute("""CREATE TABLE IF NOT EXISTS history (currency_id INTEGER, price DECIMAL, at DATETIME)""")
     for currency in currencies:
         cursor.execute("""INSERT INTO items VALUES({0}, "{1}", "{2}")""".format(currency["id"], currency["name"], currency["display_name"]))
+    conn.commit()
 
 if __name__ == "__main__":
     conn = connection.create_connection()
     cursor = conn.cursor()
     init_db(cursor)
-    conn.commit()
-    conn.close()
 
-    for i in range(0, 5):
+    while True:
         try:
-            routine()
+            print("Running routine...")
+            routine(cursor)
+            conn.commit()
+            time.sleep(15 * 60) #15 minutes
         except KeyboardInterrupt:
             print("Exiting...")
             exit(0)
+            conn.close()
 
     for currency in currencies:
         y = np.array(currency["price"])
         plt.plot(y)
         plt.savefig("img/graphs/{0}.png".format(currency["name"]), transparent=True)
         plt.clf()
+    conn.close()
